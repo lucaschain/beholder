@@ -5,19 +5,19 @@ import (
 	"log"
 	"strings"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/lucaschain/beholder/core"
 	"github.com/lucaschain/beholder/infrastructure"
 	"github.com/spf13/cobra"
 )
 
-func onFileChange(command []string) core.Callback {
-	return func(event *fsnotify.Event, err *error) {
+func onFileChange(command []string) core.ChangeCallback {
+	return func(event *core.ChangeEvent, err *error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if event.Has(fsnotify.Write) {
-			commandError := infrastructure.RunCommand(core.Replace(command, event))
+		if event.Type == "WRITE" {
+			command := core.Replace(command, event)
+			commandError := infrastructure.RunCommand(command)
 
 			if commandError != nil {
 				log.Fatal(commandError)
@@ -27,7 +27,8 @@ func onFileChange(command []string) core.Callback {
 }
 
 func Run(cmd *cobra.Command, args []string) {
-	var command = strings.Join(args, " ")
-	fmt.Printf("Watching path: %s and running command: '%s'\n", path, command)
-	core.Start(path, onFileChange(args))
+	paths := strings.Split(args[0], ",")
+	var command = strings.Join(args[1:], " ")
+	fmt.Printf("Watching path: %s and running command: '%s'\n", paths, command)
+	infrastructure.FileWatcher(paths, onFileChange(args[1:]))
 }

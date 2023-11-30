@@ -2,15 +2,14 @@ package core
 
 import (
 	"strings"
-
-	"github.com/fsnotify/fsnotify"
 )
 
-func replaceTokens(text string, event *fsnotify.Event) string {
-	return strings.ReplaceAll(text, "{file}", event.Name)
+func replaceTokens(text string, event *ChangeEvent) string {
+	text = strings.ReplaceAll(text, "{type}", event.Type)
+	return strings.ReplaceAll(text, "{file}", event.FileName)
 }
 
-func Replace(command []string, event *fsnotify.Event) []string {
+func Replace(command []string, event *ChangeEvent) []string {
 	var replacedCommand []string
 
 	for _, token := range command {
