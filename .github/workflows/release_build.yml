@@ -1,13 +1,14 @@
 name: Create Beholder Release
 
 on:
-  release:
-    types: [created]
+  push:
+    tags: ["*"]
 
 permissions:
   contents: write
   packages: write
 
+jobs:
   releases-matrix:
     name: Release Go Binary
     runs-on: ubuntu-latest
