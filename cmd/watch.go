@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/lucaschain/beholder/core"
+	"github.com/lucaschain/beholder/core/event_types"
 	"github.com/lucaschain/beholder/infrastructure"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,8 @@ func onFileChange(command []string) core.ChangeCallback {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if event.Type == "WRITE" {
+
+		if event.Type == event_types.Write {
 			command := core.Replace(command, event)
 			commandError := infrastructure.RunCommand(command)
 

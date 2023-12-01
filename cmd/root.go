@@ -5,13 +5,15 @@ import (
 	"os"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "beholder [path] -- command-to-run",
-	Short: "Simple command line file watcher",
+var Version string = "dev"
 
-	Long: `Beholder is a file watcher that can be used to run commands when files change.`,
-	Args: cobra.MinimumNArgs(2),
-	Run:  Run,
+var rootCmd = &cobra.Command{
+	Use:     "beholder [path] -- command-to-run",
+	Short:   "Simple command line file watcher",
+	Version: Version,
+	Long:    `Beholder is a file watcher that can be used to run commands when files change.`,
+	Args:    cobra.MinimumNArgs(2),
+	Run:     Run,
 }
 
 func Execute() {

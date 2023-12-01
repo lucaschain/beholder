@@ -1,7 +1,9 @@
 package core
 
+import "github.com/lucaschain/beholder/core/event_types"
+
 type ChangeEvent struct {
-	Type     string
+	Type     event_types.EventType
 	FileName string
 }
 
