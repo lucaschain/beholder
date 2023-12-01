@@ -1,0 +1,3 @@
+builds:
+  ldflags:
+    - -X github.com/lucaschain/beholder/cmd.Version={{.Version}}
