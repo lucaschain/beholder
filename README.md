@@ -7,6 +7,20 @@ _Under development_
 
 A simple CLI tool that watches files and runs commands based on it.
 
+## Installation
+
+Check the [releases page](https://github.com/lucaschain/beholder/releases) to get the correct URL for your platform install with:
+
+```bash
+export BEHOLDER_VERSION="0.0.8"
+export BEHOLDER_PLATFORM="linux_amd64"
+curl -LO https://github.com/lucaschain/beholder/releases/download/${BEHOLDER_VERSION}/beholder_${BEHOLDER_VERSION}_${BEHOLDER_PLATFORM}.tar.gz
+
+tar -xvzf beholder_${BEHOLDER_VERSION}_${BEHOLDER_PLATFORM}.tar.gz
+
+sudo mv beholder /usr/local/bin
+
+```
 
 ## Usage
 
