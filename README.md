@@ -1,6 +1,9 @@
+![main branch status checks](https://github.com/lucaschain/beholder/actions/workflows/build_and_test.yml/badge.svg)
+
 # Beholder
 
 _Under development_
+
 
 A simple CLI tool that watches files and runs commands based on it.
 
