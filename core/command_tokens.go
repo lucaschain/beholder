@@ -9,7 +9,7 @@ func replaceTokens(text string, event *ChangeEvent) string {
 	return strings.ReplaceAll(text, "{file}", event.FileName)
 }
 
-func Replace(command []string, event *ChangeEvent) []string {
+func CommandTokens(command []string, event *ChangeEvent) []string {
 	var replacedCommand []string
 
 	for _, token := range command {

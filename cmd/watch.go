@@ -18,8 +18,8 @@ func onFileChange(command []string) core.ChangeCallback {
 		}
 
 		if event.Type == event_types.Write {
-			command := core.Replace(command, event)
-			commandError := infrastructure.RunCommand(command)
+			command := core.CommandTokens(command, event)
+			commandError := infrastructure.Command(command)
 
 			if commandError != nil {
 				log.Fatal(commandError)
