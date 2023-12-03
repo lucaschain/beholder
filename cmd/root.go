@@ -1,8 +1,11 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"os"
+	"strings"
+
+	"github.com/lucaschain/beholder/use_case"
+	"github.com/spf13/cobra"
 )
 
 var Version string = "dev"
@@ -24,5 +27,11 @@ func Execute() {
 }
 
 func init() {
-	setFlags(rootCmd)
+	SetFlags(rootCmd)
+}
+
+func Run(cmd *cobra.Command, args []string) {
+	paths := strings.Split(args[0], ",")
+	command := args[1:]
+	use_case.Watch(paths, command, types, allowFailing)
 }
