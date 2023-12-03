@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/lucaschain/beholder/core"
+	"github.com/lucaschain/beholder/core/event_types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -18,7 +19,7 @@ func TestCommandTokens(t *testing.T) {
 		}
 		event := core.ChangeEvent{
 			FileName: "file.txt",
-			Type:     "WRITE",
+			Type:     event_types.Write,
 		}
 
 		tokens := core.CommandTokens(list, &event)

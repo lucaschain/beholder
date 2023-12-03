@@ -5,6 +5,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/lucaschain/beholder/core"
+	"github.com/lucaschain/beholder/core/event_types"
 )
 
 func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
@@ -14,7 +15,10 @@ func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
 			if !ok {
 				continue
 			}
-			changeEvent := core.ChangeEvent{Type: event.Op, FileName: event.Name}
+			changeEvent := core.ChangeEvent{
+				Type:     event_types.FromString(event.Op.String()),
+				FileName: event.Name,
+			}
 			callback(&changeEvent, nil)
 		case err, _ := <-watcher.Errors:
 			if err != nil {

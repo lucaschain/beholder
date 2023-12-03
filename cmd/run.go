@@ -11,6 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var types []string
+var defaultTypes = []string{"WRITE"}
+
 func onFileChange(command []string) core.ChangeCallback {
 	return func(event *core.ChangeEvent, err *error) {
 		if err != nil {
@@ -33,4 +36,14 @@ func Run(cmd *cobra.Command, args []string) {
 	var command = strings.Join(args[1:], " ")
 	fmt.Printf("Watching path: %s and running command: '%s'\n", paths, command)
 	infrastructure.FileWatcher(paths, onFileChange(args[1:]))
+}
+
+func setFlags(cmd *cobra.Command) {
+	cmd.Flags().StringSliceVarP(
+		&types,
+		"type",
+		"t",
+		defaultTypes,
+		fmt.Sprintf("Event types to watch, options: %s", event_types.EventTypes),
+	)
 }
