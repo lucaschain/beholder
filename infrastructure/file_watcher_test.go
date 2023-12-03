@@ -17,9 +17,10 @@ func TestFileWatcher(t *testing.T) {
 		testFile := testFilePath + "/" + testFileName
 		ctx, cancel := context.WithCancel(context.Background())
 		var fileName string
-		callback := func(event *core.ChangeEvent, err *error) {
+		callback := func(event *core.ChangeEvent, err *error) *error {
 			fileName = event.FileName
 			cancel()
+			return nil
 		}
 		os.MkdirAll(testFilePath, 0755)
 		os.Create(testFilePath + "/" + testFileName)

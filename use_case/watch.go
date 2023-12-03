@@ -3,7 +3,6 @@ package use_case
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/lucaschain/beholder/core"
 	"github.com/lucaschain/beholder/core/event_types"
@@ -20,9 +19,9 @@ type FileWatcher func(paths []string, callback core.ChangeCallback, ctx context.
 type CommandRunner func(command []string) error
 
 func onFileChange(c WatchConfig, commandRunner CommandRunner) core.ChangeCallback {
-	return func(event *core.ChangeEvent, err *error) {
+	return func(event *core.ChangeEvent, err *error) *error {
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if event_types.Filter(event.Type, c.AllowedTypes) {
@@ -30,9 +29,10 @@ func onFileChange(c WatchConfig, commandRunner CommandRunner) core.ChangeCallbac
 			commandError := commandRunner(command)
 
 			if commandError != nil && !c.AllowFailing {
-				log.Fatal(commandError)
+				return &commandError
 			}
 		}
+		return nil
 	}
 }
 

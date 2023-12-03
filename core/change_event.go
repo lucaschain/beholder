@@ -7,4 +7,4 @@ type ChangeEvent struct {
 	FileName string
 }
 
-type ChangeCallback func(*ChangeEvent, *error)
+type ChangeCallback func(*ChangeEvent, *error) *error

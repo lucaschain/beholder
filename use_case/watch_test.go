@@ -2,6 +2,7 @@ package use_case_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/lucaschain/beholder/core"
@@ -59,6 +60,48 @@ func TestWatch(t *testing.T) {
 
 		assert.Equal(t, []string{"echo", "CREATE", "test.txt"}, command)
 	})
+
+	t.Run("should return watcher errors without treating anything", func(t *testing.T) {
+		config := buildWatchConfig()
+		config.AllowedTypes = []event_types.EventType{event_types.Create}
+		config.Command = []string{"echo", "{type}", "{file}"}
+
+		var returnedError error
+		var fakeErr error
+		fakeWatcher := func(paths []string, callback core.ChangeCallback, ctx context.Context) {
+			fakeErr = errors.New("error")
+			returnedError = *callback(nil, &fakeErr)
+		}
+
+		use_case.Watch(config, fakeWatcher, func(command []string) error { return nil })
+
+		assert.Equal(t, fakeErr, returnedError)
+	})
+
+	t.Run("should return command errors if allowing errors", func(t *testing.T) {
+		config := buildWatchConfig()
+		config.AllowedTypes = []event_types.EventType{event_types.Create}
+		config.Command = []string{"echo", "{type}", "{file}"}
+		config.AllowFailing = true
+
+		var returnedError error
+		commandError := errors.New("error")
+		fakeRunner := func(command []string) error {
+			return commandError
+		}
+
+		fakeWatcher := buildFakeFileWatcher("test.txt", event_types.Create)
+		use_case.Watch(config, fakeWatcher, fakeRunner)
+
+		assert.Equal(t, commandError, returnedError)
+	})
+}
+
+func buildFakeErrorFileWatcher() use_case.FileWatcher {
+	return func(paths []string, callback core.ChangeCallback, ctx context.Context) {
+		error := errors.New("error")
+		callback(nil, &error)
+	}
 }
 
 func buildFakeFileWatcher(filename string, eventType event_types.EventType) use_case.FileWatcher {
