@@ -1,6 +1,7 @@
 package use_case_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/lucaschain/beholder/core"
@@ -69,7 +70,7 @@ func buildFakeFileWatcher(filename string, eventType event_types.EventType) use_
 		Type:     event_types.Create,
 		FileName: filename,
 	}
-	return func(paths []string, callback core.ChangeCallback) {
+	return func(paths []string, callback core.ChangeCallback, ctx context.Context) {
 		callback(event, nil)
 	}
 }

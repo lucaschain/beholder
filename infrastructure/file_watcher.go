@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"context"
 	"log"
 
 	"github.com/fsnotify/fsnotify"
@@ -28,7 +29,7 @@ func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
 	}
 }
 
-func FileWatcher(paths []string, callback core.ChangeCallback) {
+func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Context) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		callback(nil, &err)
@@ -46,5 +47,5 @@ func FileWatcher(paths []string, callback core.ChangeCallback) {
 		}
 	}
 
-	<-make(chan struct{})
+	<-ctx.Done()
 }

@@ -1,6 +1,7 @@
 package use_case
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -15,7 +16,7 @@ type WatchConfig struct {
 	AllowFailing bool
 }
 
-type FileWatcher func(paths []string, callback core.ChangeCallback)
+type FileWatcher func(paths []string, callback core.ChangeCallback, ctx context.Context)
 type CommandRunner func(command []string) error
 
 func onFileChange(c WatchConfig, commandRunner CommandRunner) core.ChangeCallback {
@@ -42,5 +43,5 @@ func Watch(
 ) {
 	fmt.Printf("Watching path: %s and running command: '%s'\n", c.Paths, c.Command)
 	callback := onFileChange(c, commandRunner)
-	fileWatcher(c.Paths, callback)
+	fileWatcher(c.Paths, callback, context.Background())
 }
