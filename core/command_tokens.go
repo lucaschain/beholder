@@ -5,7 +5,7 @@ import (
 )
 
 func replaceTokens(text string, event *ChangeEvent) string {
-	text = strings.ReplaceAll(text, "{type}", event.Type)
+	text = strings.ReplaceAll(text, "{type}", event.Type.String())
 	return strings.ReplaceAll(text, "{file}", event.FileName)
 }
 

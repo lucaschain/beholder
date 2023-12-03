@@ -14,7 +14,7 @@ func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
 			if !ok {
 				continue
 			}
-			changeEvent := core.ChangeEvent{Type: event.Op.String(), FileName: event.Name}
+			changeEvent := core.ChangeEvent{Type: event.Op, FileName: event.Name}
 			callback(&changeEvent, nil)
 		case err, _ := <-watcher.Errors:
 			if err != nil {
