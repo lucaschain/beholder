@@ -1,9 +1,9 @@
+GOBIN ?= $$(go env GOPATH)/bin
+
 build:
 	go build \
 		-ldflags "-X github.com/lucaschain/beholder/cmd.Version=$(BEHOLDER_VERSION)" \
 		-o bin/beholder
-
-
 
 run:
 	go run main.go
@@ -20,4 +20,5 @@ install-go-test-coverage:
 .PHONY: check-coverage
 check-coverage: install-go-test-coverage
 	go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
-	${GOBIN}/go-test-coverage --config=./.testcoverage.yml
+	${GOBIN}/go-test-coverage --profile ./cover.out
+	go tool cover -html=cover.out -o=cover.html
