@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/lucaschain/beholder/infrastructure"
 	"github.com/lucaschain/beholder/use_case"
 	"github.com/spf13/cobra"
 )
@@ -33,5 +34,12 @@ func init() {
 func Run(cmd *cobra.Command, args []string) {
 	paths := strings.Split(args[0], ",")
 	command := args[1:]
-	use_case.Watch(paths, command, types, allowFailing)
+
+	watchConfig := use_case.WatchConfig{
+		Paths:        paths,
+		Command:      command,
+		AllowedTypes: types,
+		AllowFailing: allowFailing,
+	}
+	use_case.Watch(watchConfig, infrastructure.FileWatcher, infrastructure.Command)
 }

@@ -6,20 +6,29 @@ import (
 
 	"github.com/lucaschain/beholder/core"
 	"github.com/lucaschain/beholder/core/event_types"
-	"github.com/lucaschain/beholder/infrastructure"
 )
 
-func onFileChange(command []string, allowedTypes []string, allowFailing bool) core.ChangeCallback {
+type WatchConfig struct {
+	Paths        []string
+	Command      []string
+	AllowedTypes []string
+	AllowFailing bool
+}
+
+type FileWatcher func(paths []string, callback core.ChangeCallback)
+type CommandRunner func(command []string) error
+
+func onFileChange(c WatchConfig, commandRunner CommandRunner) core.ChangeCallback {
 	return func(event *core.ChangeEvent, err *error) {
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if event_types.Filter(event.Type, allowedTypes) {
-			command := core.CommandTokens(command, event)
-			commandError := infrastructure.Command(command)
+		if event_types.Filter(event.Type, c.AllowedTypes) {
+			command := core.CommandTokens(c.Command, event)
+			commandError := commandRunner(command)
 
-			if commandError != nil && !allowFailing {
+			if commandError != nil && !c.AllowFailing {
 				log.Fatal(commandError)
 			}
 		}
@@ -27,12 +36,11 @@ func onFileChange(command []string, allowedTypes []string, allowFailing bool) co
 }
 
 func Watch(
-	paths []string,
-	command []string,
-	allowedTypes []string,
-	allowFailing bool,
+	c WatchConfig,
+	fileWatcher FileWatcher,
+	commandRunner CommandRunner,
 ) {
-	fmt.Printf("Watching path: %s and running command: '%s'\n", paths, command)
-	callback := onFileChange(command, allowedTypes, allowFailing)
-	infrastructure.FileWatcher(paths, callback)
+	fmt.Printf("Watching path: %s and running command: '%s'\n", c.Paths, c.Command)
+	callback := onFileChange(c, commandRunner)
+	fileWatcher(c.Paths, callback)
 }
