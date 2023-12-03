@@ -1,5 +1,5 @@
 ![main branch status checks](https://github.com/lucaschain/beholder/actions/workflows/build_and_test.yml/badge.svg)
-![coverage](https://raw.githubusercontent.com/org/project/badges/.badges/main/coverage.svg)
+![coverage](https://raw.githubusercontent.com/lucaschain/beholder/badges/.badges/main/coverage.svg)
 
 # Beholder
 
