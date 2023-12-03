@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/lucaschain/beholder/core/event_types"
 	"github.com/lucaschain/beholder/infrastructure"
 	"github.com/lucaschain/beholder/use_case"
 	"github.com/spf13/cobra"
@@ -35,10 +36,16 @@ func Run(cmd *cobra.Command, args []string) {
 	paths := strings.Split(args[0], ",")
 	command := args[1:]
 
+	var allowedTypes []event_types.EventType
+
+	for _, t := range types {
+		allowedTypes = append(allowedTypes, event_types.FromString(t))
+	}
+
 	watchConfig := use_case.WatchConfig{
 		Paths:        paths,
 		Command:      command,
-		AllowedTypes: types,
+		AllowedTypes: allowedTypes,
 		AllowFailing: allowFailing,
 	}
 	use_case.Watch(watchConfig, infrastructure.FileWatcher, infrastructure.Command)

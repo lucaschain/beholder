@@ -12,7 +12,7 @@ import (
 type WatchConfig struct {
 	Paths        []string
 	Command      []string
-	AllowedTypes []string
+	AllowedTypes []event_types.EventType
 	AllowFailing bool
 }
 

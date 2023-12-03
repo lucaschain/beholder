@@ -13,7 +13,7 @@ import (
 func TestWatch(t *testing.T) {
 	t.Run("should only call callback if type is allowed", func(t *testing.T) {
 		config := buildWatchConfig()
-		config.AllowedTypes = []string{string(event_types.Create)}
+		config.AllowedTypes = []event_types.EventType{event_types.Create}
 
 		var called bool
 		fakeRunner := func(command []string) error {
@@ -29,7 +29,7 @@ func TestWatch(t *testing.T) {
 
 	t.Run("should not call callback if type is not allowed", func(t *testing.T) {
 		config := buildWatchConfig()
-		config.AllowedTypes = []string{string(event_types.Chmod)}
+		config.AllowedTypes = []event_types.EventType{event_types.Chmod}
 
 		var called bool
 		fakeRunner := func(command []string) error {
@@ -45,7 +45,7 @@ func TestWatch(t *testing.T) {
 
 	t.Run("should replace the command tokens based on the event", func(t *testing.T) {
 		config := buildWatchConfig()
-		config.AllowedTypes = []string{string(event_types.Create)}
+		config.AllowedTypes = []event_types.EventType{event_types.Create}
 		config.Command = []string{"echo", "{type}", "{file}"}
 
 		var command []string
@@ -85,7 +85,7 @@ func buildWatchConfig() use_case.WatchConfig {
 	return use_case.WatchConfig{
 		Paths:        []string{"."},
 		Command:      []string{"echo", "hello"},
-		AllowedTypes: []string{event_types.Create.String()},
+		AllowedTypes: []event_types.EventType{event_types.Create},
 		AllowFailing: false,
 	}
 }
