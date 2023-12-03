@@ -68,9 +68,10 @@ func TestWatch(t *testing.T) {
 
 		var returnedError error
 		var fakeErr error
-		fakeWatcher := func(paths []string, callback core.ChangeCallback, ctx context.Context) {
+		fakeWatcher := func(paths []string, callback core.ChangeCallback, ctx context.Context) *error {
 			fakeErr = errors.New("error")
 			returnedError = *callback(nil, &fakeErr)
+			return nil
 		}
 
 		use_case.Watch(config, fakeWatcher, func(command []string) error { return nil })
@@ -84,23 +85,22 @@ func TestWatch(t *testing.T) {
 		config.Command = []string{"echo", "{type}", "{file}"}
 		config.AllowFailing = true
 
-		var returnedError error
 		commandError := errors.New("error")
 		fakeRunner := func(command []string) error {
 			return commandError
 		}
 
 		fakeWatcher := buildFakeFileWatcher("test.txt", event_types.Create)
-		use_case.Watch(config, fakeWatcher, fakeRunner)
+		err := use_case.Watch(config, fakeWatcher, fakeRunner)
 
-		assert.Equal(t, commandError, returnedError)
+		assert.Equal(t, commandError, *err)
 	})
 }
 
 func buildFakeErrorFileWatcher() use_case.FileWatcher {
-	return func(paths []string, callback core.ChangeCallback, ctx context.Context) {
+	return func(paths []string, callback core.ChangeCallback, ctx context.Context) *error {
 		error := errors.New("error")
-		callback(nil, &error)
+		return callback(nil, &error)
 	}
 }
 
@@ -113,8 +113,8 @@ func buildFakeFileWatcher(filename string, eventType event_types.EventType) use_
 		Type:     event_types.Create,
 		FileName: filename,
 	}
-	return func(paths []string, callback core.ChangeCallback, ctx context.Context) {
-		callback(event, nil)
+	return func(paths []string, callback core.ChangeCallback, ctx context.Context) *error {
+		return callback(event, nil)
 	}
 }
 

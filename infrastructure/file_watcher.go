@@ -9,7 +9,7 @@ import (
 	"github.com/lucaschain/beholder/core/event_types"
 )
 
-func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
+func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) *error {
 	for {
 		select {
 		case event, ok := <-watcher.Events:
@@ -20,7 +20,10 @@ func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
 				Type:     event_types.FromString(event.Op.String()),
 				FileName: event.Name,
 			}
-			callback(&changeEvent, nil)
+			err := callback(&changeEvent, nil)
+			if err != nil {
+				return err
+			}
 		case err, _ := <-watcher.Errors:
 			if err != nil {
 				callback(nil, &err)
@@ -29,7 +32,7 @@ func loop(watcher *fsnotify.Watcher, callback core.ChangeCallback) {
 	}
 }
 
-func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Context) {
+func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Context) *error {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		callback(nil, &err)
@@ -37,7 +40,11 @@ func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Conte
 	defer watcher.Close()
 
 	go func() {
-		loop(watcher, callback)
+		commandError := loop(watcher, callback)
+
+		if commandError != nil {
+			ctx.Done()
+		}
 	}()
 
 	for _, path := range paths {
@@ -48,4 +55,7 @@ func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Conte
 	}
 
 	<-ctx.Done()
+
+	err = ctx.Err()
+	return &err
 }
