@@ -46,6 +46,7 @@ func Run(cmd *cobra.Command, args []string) {
 		Paths:        paths,
 		Command:      command,
 		AllowedTypes: allowedTypes,
+		Extensions:   extensions,
 		AllowFailing: allowFailing,
 	}
 	use_case.Watch(watchConfig, infrastructure.FileWatcher, infrastructure.Command)

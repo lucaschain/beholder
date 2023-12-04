@@ -128,6 +128,7 @@ func buildWatchConfig() use_case.WatchConfig {
 	return use_case.WatchConfig{
 		Paths:        []string{"."},
 		Command:      []string{"echo", "hello"},
+		Extensions:   []string{".txt"},
 		AllowedTypes: []event_types.EventType{event_types.Create},
 		AllowFailing: false,
 	}

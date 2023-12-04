@@ -12,6 +12,7 @@ type WatchConfig struct {
 	Paths        []string
 	Command      []string
 	AllowedTypes []event_types.EventType
+	Extensions   []string
 	AllowFailing bool
 }
 
@@ -24,7 +25,7 @@ func onFileChange(c WatchConfig, commandRunner CommandRunner) core.ChangeCallbac
 			return err
 		}
 
-		if event_types.Filter(event.Type, c.AllowedTypes) {
+		if event_types.Filter(event.Type, c.AllowedTypes) && core.ExtensionFilter(event.FileName, c.Extensions) {
 			command := core.CommandTokens(c.Command, event)
 			commandError := commandRunner(command)
 
