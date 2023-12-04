@@ -34,7 +34,7 @@ $ beholder . -e go -e yml -- go test ./...`,
 		&allowFailing,
 		"allow-failing",
 		"f",
-		false,
+		true,
 		"Keep running when command fails",
 	)
 }
