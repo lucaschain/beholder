@@ -39,11 +39,13 @@ func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Conte
 	}
 	defer watcher.Close()
 
+	loopCtx, cancel := context.WithCancelCause(ctx)
+
 	go func() {
 		commandError := loop(watcher, callback)
 
 		if commandError != nil {
-			ctx.Done()
+			cancel(*commandError)
 		}
 	}()
 
@@ -54,7 +56,7 @@ func FileWatcher(paths []string, callback core.ChangeCallback, ctx context.Conte
 		}
 	}
 
-	<-ctx.Done()
+	<-loopCtx.Done()
 
 	err = ctx.Err()
 	return &err
