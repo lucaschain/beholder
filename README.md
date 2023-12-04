@@ -10,7 +10,7 @@ A simple CLI tool that watches files and runs commands based on it.
 
 ## Installation
 
-Check the [releases page](https://github.com/lucaschain/beholder/releases) to get the correct URL for your platform install with:
+Check the [releases page](https://github.com/lucaschain/beholder/releases) to get the correct URL for your platform and install with:
 
 ```bash
 export BEHOLDER_VERSION="0.0.8"
@@ -34,4 +34,26 @@ echo "hello" > /tmp/beholder_test.txt
 
 # this will be printed:
 # I see that /tmp/beholder_test.txt was changed
+```
+
+All `WRITE` operation events will trigger the command, but this can be changed with the `--type` flag:
+```bash
+beholder . --type CREATE --type WRITE -- cat {file}
+```
+Event types come from [fsnotify](https://github.com/fsnotify/fsnotify), and you can check them all here. Here's a list with the ones that existed at the moment of writing this:
+
+- `CHMOD`
+- `CREATE`
+- `REMOVE`
+- `RENAME`
+- `WRITE`
+
+Watching for specific extensions:
+```bash
+beholder . --extension ".go" -- go test ./...
+```
+
+By default, non-zero exit codes doesn't stop the watch process. This can be changed through the `allow-failing` flag:
+```bash
+beholder . --allow-failing=false -- diff /my/old/file {file}
 ```

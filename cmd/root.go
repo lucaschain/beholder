@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Use:     "beholder [path] -- command-to-run",
 	Short:   "Simple command line file watcher",
 	Version: Version,
-	Long:    `Beholder is a file watcher that can be used to run commands when files change.`,
+	Long:    `Beholder is a language-agnostic file watcher that can be used to run commands when files change.`,
 	Args:    cobra.MinimumNArgs(2),
 	Run:     Run,
 }

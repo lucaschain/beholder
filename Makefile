@@ -1,4 +1,5 @@
 GOBIN ?= $$(go env GOPATH)/bin
+BEHOLDER_VERSION ?= "dev"
 
 build:
 	go build \
